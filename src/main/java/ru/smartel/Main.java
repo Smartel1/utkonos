@@ -29,101 +29,101 @@ public class Main {
         }
         StatisticsRepository repository = new FileStatisticsRepository(path);
 
-        // Используем try-with-resources для корректного завершения работы с файлом
-        // Читаем файл всякий раз, когда хотим что-нибудь вычислить, так как мы не храним данные в памяти
+        // Читаем файл всякий раз, когда хотим что-нибудь вычислить, так как мы не храним данные в памяти.
         // Если бы было необходимо за одно прочтение файла вычислять разные данные, то можно бы было сделать реализацию
         // DistributionManager так, чтобы он отправлял данные сразу в несколько калькуляторов
-        try (Stream<String> lines = repository.read()) {
-            printAverageInstrument1Cost(lines);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-
-        try (Stream<String> lines = repository.read()) {
-            printAverageNovInstrument2Cost(lines);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-
-        try (Stream<String> lines = repository.read()) {
-            printMaxInstrument3Cost(lines);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-
-        try (Stream<String> lines = repository.read()) {
-            printRecentInstrument3CostSum(lines);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+        printAverageInstrument1Cost(repository);
+        printAverageNovInstrument2Cost(repository);
+        printMaxInstrument3Cost(repository);
+        printRecentInstrument3CostSum(repository);
     }
 
     /**
      * Вычислить и вывести среднюю стоимость инструмента 1 за всё время
      */
-    private static void printAverageInstrument1Cost(Stream<String> lines) {
-        DistributionManager<AverageCostCalculator.AvgCostBatchResult> calculator =
-                new ExecutorServiceDistributionManager<>(
-                        new AverageCostCalculator(
-                                Filters.weekendFilter()
-                                        .and(Filters.nameFilter("INSTRUMENT1"))),
-                        100,
-                        Executors.newFixedThreadPool(THREADS_COUNT));
+    private static void printAverageInstrument1Cost(StatisticsRepository repository) {
+        // Используем try-with-resources для корректного завершения работы с файлом
+        try (Stream<String> lines = repository.read()) {
+            DistributionManager<AverageCostCalculator.AvgCostBatchResult> calculator =
+                    new ExecutorServiceDistributionManager<>(
+                            new AverageCostCalculator(
+                                    Filters.weekendFilter()
+                                            .and(Filters.nameFilter("INSTRUMENT1"))),
+                            100,
+                            Executors.newFixedThreadPool(THREADS_COUNT));
 
-        lines.forEach(calculator::addStatisticsLine);
+            lines.forEach(calculator::addStatisticsLine);
 
-        System.out.println("Средняя цена INSTRUMENT1: " + calculator.getResult().getAvgCost());
+            System.out.println("Средняя цена INSTRUMENT1: " + calculator.getResult().getAvgCost());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     /**
      * Вычислить и вывести среднюю стоимость инструмента 2 за ноябрь 2014
      */
-    private static void printAverageNovInstrument2Cost(Stream<String> lines) {
-        DistributionManager<AverageCostCalculator.AvgCostBatchResult> calculator =
-                new ExecutorServiceDistributionManager<>(
-                        new AverageCostCalculator(
-                                Filters.weekendFilter()
-                                        .and(Filters.nameFilter("INSTRUMENT2"))
-                                        .and(Filters.november2014fFilter())),
-                        100,
-                        Executors.newFixedThreadPool(THREADS_COUNT));
+    private static void printAverageNovInstrument2Cost(StatisticsRepository repository) {
+        // Используем try-with-resources для корректного завершения работы с файлом
+        try (Stream<String> lines = repository.read()) {
+            DistributionManager<AverageCostCalculator.AvgCostBatchResult> calculator =
+                    new ExecutorServiceDistributionManager<>(
+                            new AverageCostCalculator(
+                                    Filters.weekendFilter()
+                                            .and(Filters.nameFilter("INSTRUMENT2"))
+                                            .and(Filters.november2014fFilter())),
+                            100,
+                            Executors.newFixedThreadPool(THREADS_COUNT));
 
-        lines.forEach(calculator::addStatisticsLine);
+            lines.forEach(calculator::addStatisticsLine);
 
-        System.out.println("Средняя цена INSTRUMENT2 за ноябрь 2014: " + calculator.getResult().getAvgCost());
+            System.out.println("Средняя цена INSTRUMENT2 за ноябрь 2014: " + calculator.getResult().getAvgCost());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     /**
      * Вычислить и вывести максимальную стоимость инструмента 3 за всё время
      */
-    private static void printMaxInstrument3Cost(Stream<String> lines) {
-        DistributionManager<MaxCostCalculator.MaxCostBatchResult> calculator =
-                new ExecutorServiceDistributionManager<>(
-                        new MaxCostCalculator(
-                                Filters.weekendFilter()
-                                        .and(Filters.nameFilter("INSTRUMENT3"))),
-                        100,
-                        Executors.newFixedThreadPool(THREADS_COUNT));
+    private static void printMaxInstrument3Cost(StatisticsRepository repository) {
+        // Используем try-with-resources для корректного завершения работы с файлом
+        try (Stream<String> lines = repository.read()) {
+            DistributionManager<MaxCostCalculator.MaxCostBatchResult> calculator =
+                    new ExecutorServiceDistributionManager<>(
+                            new MaxCostCalculator(
+                                    Filters.weekendFilter()
+                                            .and(Filters.nameFilter("INSTRUMENT3"))),
+                            100,
+                            Executors.newFixedThreadPool(THREADS_COUNT));
 
-        lines.forEach(calculator::addStatisticsLine);
+            lines.forEach(calculator::addStatisticsLine);
 
-        System.out.println("Максимальная цена INSTRUMENT3: " + calculator.getResult().getMaxCost());
+            System.out.println("Максимальная цена INSTRUMENT3: " + calculator.getResult().getMaxCost());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     /**
      * Вычислить и вывести сумму стоимостей инструмента 3 за последние 10 дней
      */
-    private static void printRecentInstrument3CostSum(Stream<String> lines) {
-        DistributionManager<RecentCostSumCalculator.RecentQuotationsBatchResult> calculator =
-                new ExecutorServiceDistributionManager<>(
-                        new RecentCostSumCalculator(
-                                Filters.weekendFilter()
-                                        .and(Filters.nameFilter("INSTRUMENT3"))),
-                        100,
-                        Executors.newFixedThreadPool(THREADS_COUNT));
+    private static void printRecentInstrument3CostSum(StatisticsRepository repository) {
+        // Используем try-with-resources для корректного завершения работы с файлом
+        try (Stream<String> lines = repository.read()) {
+            DistributionManager<RecentCostSumCalculator.RecentQuotationsBatchResult> calculator =
+                    new ExecutorServiceDistributionManager<>(
+                            new RecentCostSumCalculator(
+                                    Filters.weekendFilter()
+                                            .and(Filters.nameFilter("INSTRUMENT3"))),
+                            100,
+                            Executors.newFixedThreadPool(THREADS_COUNT));
 
-        lines.forEach(calculator::addStatisticsLine);
+            lines.forEach(calculator::addStatisticsLine);
 
-        System.out.println("Сумма цен за последние 10 дней INSTRUMENT3: " + calculator.getResult().getCostSum());
+            System.out.println("Сумма цен за последние 10 дней INSTRUMENT3: " + calculator.getResult().getCostSum());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 }
