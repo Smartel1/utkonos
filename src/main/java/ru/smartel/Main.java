@@ -44,7 +44,7 @@ public class Main {
     private static void printAverageInstrument1Cost(StatisticsRepository repository) {
         // Используем try-with-resources для корректного завершения работы с файлом
         try (Stream<String> lines = repository.read()) {
-            DistributionManager<AverageCostCalculator.AvgCostBatchResult> calculator =
+            DistributionManager<AverageCostCalculator.AvgCostBatchResult> manager =
                     new ExecutorServiceDistributionManager<>(
                             new AverageCostCalculator(
                                     Filters.weekendFilter()
@@ -52,9 +52,9 @@ public class Main {
                             100,
                             Executors.newFixedThreadPool(THREADS_COUNT));
 
-            lines.forEach(calculator::addStatisticsLine);
-
-            System.out.println("Средняя цена INSTRUMENT1: " + calculator.getResult().getAvgCost());
+            lines.forEach(manager::addStatisticsLine);
+            AverageCostCalculator.AvgCostBatchResult result = manager.getResult();
+            System.out.println("Средняя цена INSTRUMENT1: " + result.getAvgCost());
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -66,7 +66,7 @@ public class Main {
     private static void printAverageNovInstrument2Cost(StatisticsRepository repository) {
         // Используем try-with-resources для корректного завершения работы с файлом
         try (Stream<String> lines = repository.read()) {
-            DistributionManager<AverageCostCalculator.AvgCostBatchResult> calculator =
+            DistributionManager<AverageCostCalculator.AvgCostBatchResult> manager =
                     new ExecutorServiceDistributionManager<>(
                             new AverageCostCalculator(
                                     Filters.weekendFilter()
@@ -75,9 +75,9 @@ public class Main {
                             100,
                             Executors.newFixedThreadPool(THREADS_COUNT));
 
-            lines.forEach(calculator::addStatisticsLine);
-
-            System.out.println("Средняя цена INSTRUMENT2 за ноябрь 2014: " + calculator.getResult().getAvgCost());
+            lines.forEach(manager::addStatisticsLine);
+            AverageCostCalculator.AvgCostBatchResult result = manager.getResult();
+            System.out.println("Средняя цена INSTRUMENT2 за ноябрь 2014: " + result.getAvgCost());
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -89,7 +89,7 @@ public class Main {
     private static void printMaxInstrument3Cost(StatisticsRepository repository) {
         // Используем try-with-resources для корректного завершения работы с файлом
         try (Stream<String> lines = repository.read()) {
-            DistributionManager<MaxCostCalculator.MaxCostBatchResult> calculator =
+            DistributionManager<MaxCostCalculator.MaxCostBatchResult> manager =
                     new ExecutorServiceDistributionManager<>(
                             new MaxCostCalculator(
                                     Filters.weekendFilter()
@@ -97,9 +97,9 @@ public class Main {
                             100,
                             Executors.newFixedThreadPool(THREADS_COUNT));
 
-            lines.forEach(calculator::addStatisticsLine);
-
-            System.out.println("Максимальная цена INSTRUMENT3: " + calculator.getResult().getMaxCost());
+            lines.forEach(manager::addStatisticsLine);
+            MaxCostCalculator.MaxCostBatchResult result = manager.getResult();
+            System.out.println("Максимальная цена INSTRUMENT3: " + result.getMaxCost());
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -111,7 +111,7 @@ public class Main {
     private static void printRecentInstrument3CostSum(StatisticsRepository repository) {
         // Используем try-with-resources для корректного завершения работы с файлом
         try (Stream<String> lines = repository.read()) {
-            DistributionManager<RecentCostSumCalculator.RecentQuotationsBatchResult> calculator =
+            DistributionManager<RecentCostSumCalculator.RecentQuotationsBatchResult> manager =
                     new ExecutorServiceDistributionManager<>(
                             new RecentCostSumCalculator(
                                     Filters.weekendFilter()
@@ -119,9 +119,9 @@ public class Main {
                             100,
                             Executors.newFixedThreadPool(THREADS_COUNT));
 
-            lines.forEach(calculator::addStatisticsLine);
-
-            System.out.println("Сумма цен за последние 10 дней INSTRUMENT3: " + calculator.getResult().getCostSum());
+            lines.forEach(manager::addStatisticsLine);
+            RecentCostSumCalculator.RecentQuotationsBatchResult result = manager.getResult();
+            System.out.println("Сумма цен за последние 10 дней INSTRUMENT3: " + result.getCostSum());
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
